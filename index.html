@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greased Lightning Service Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --yellow: #FFD100;
+    --yellow-dark: #e6bc00;
+    --white: #f5f0e8;
+    --gray: #1a1a1a;
+    --gray-mid: #2a2a2a;
+    --gray-light: #888;
+    --red: #c0392b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── STICKY NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid var(--yellow);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 64px;
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-logo .bolt { font-size: 1.6rem; }
+
+  .nav-logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--yellow);
+    line-height: 1;
+  }
+
+  .nav-logo-text span {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--white);
+    letter-spacing: 3px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+  }
+
+  .nav-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--yellow); }
+
+  .nav-cta {
+    background: var(--yellow);
+    color: var(--black);
+    border: none;
+    padding: 10px 22px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .nav-cta:hover { background: var(--yellow-dark); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    padding-top: 64px;
+    display: flex; align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(
+        -55deg,
+        transparent,
+        transparent 40px,
+        rgba(255,209,0,0.03) 40px,
+        rgba(255,209,0,0.03) 42px
+      );
+  }
+
+  .hero-bolt-bg {
+    position: absolute;
+    right: -80px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 55vw;
+    line-height: 1;
+    color: rgba(255,209,0,0.04);
+    pointer-events: none;
+    user-select: none;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 13rem);
+    line-height: 0.9;
+    letter-spacing: -2px;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.4s;
+  }
+
+  .hero-title .yellow { color: var(--yellow); }
+
+  .hero-subtitle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 400;
+    color: var(--gray-light);
+    margin-top: 1rem;
+    max-width: 500px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.6s;
+  }
+
+  .hero-stats {
+    display: flex; gap: 3rem;
+    margin-top: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.8s;
+  }
+
+  .hero-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--yellow);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-light);
+  }
+
+  .hero-buttons {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    margin-top: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 1s;
+  }
+
+  .btn-primary {
+    background: var(--yellow);
+    color: var(--black);
+    padding: 14px 36px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    text-decoration: none;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--yellow-dark); transform: translateY(-2px); }
+
+  .btn-secondary {
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+    padding: 12px 34px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    text-decoration: none;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover { background: var(--yellow); color: var(--black); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 6rem 2rem; }
+
+  .section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 1;
+    letter-spacing: 1px;
+    color: var(--white);
+    margin-bottom: 3rem;
+  }
+
+  .divider {
+    width: 60px; height: 4px;
+    background: var(--yellow);
+    margin: 1rem 0 2.5rem;
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    background: var(--yellow);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 12px 0;
+  }
+
+  .ticker-track {
+    display: inline-block;
+    animation: ticker 25s linear infinite;
+  }
+
+  .ticker-item {
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    color: var(--black);
+    padding: 0 2rem;
+  }
+
+  .ticker-item::before {
+    content: '⚡';
+    margin-right: 1rem;
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── SERVICES ── */
+  #services { background: var(--gray); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 2px;
+  }
+
+  .service-card {
+    background: var(--black);
+    padding: 2rem 1.5rem;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .service-card:hover {
+    border-bottom-color: var(--yellow);
+    background: var(--gray-mid);
+    transform: translateY(-4px);
+  }
+
+  .service-icon {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .service-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+  }
+
+  .service-desc {
+    font-size: 0.88rem;
+    color: var(--gray-light);
+    line-height: 1.5;
+  }
+
+  /* ── WHY US ── */
+  #why { background: var(--black); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .why-feature {
+    display: flex; gap: 1.2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+  }
+
+  .why-icon {
+    background: var(--yellow);
+    color: var(--black);
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+
+  .why-feature-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+
+  .why-feature-text {
+    font-size: 0.9rem;
+    color: var(--gray-light);
+    line-height: 1.6;
+  }
+
+  .why-big-stat {
+    background: var(--gray);
+    padding: 3rem;
+    text-align: center;
+    border-top: 4px solid var(--yellow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .why-big-stat::after {
+    content: '⚡';
+    position: absolute;
+    bottom: -20px; right: 10px;
+    font-size: 8rem;
+    opacity: 0.05;
+  }
+
+  .why-big-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 7rem;
+    color: var(--yellow);
+    line-height: 1;
+  }
+
+  .why-big-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    margin-top: 0.5rem;
+  }
+
+  /* ── TEAM ── */
+  #team { background: var(--gray); }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2px;
+  }
+
+  .team-card {
+    background: var(--black);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-top: 3px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .team-card:hover { border-top-color: var(--yellow); }
+
+  .team-avatar {
+    width: 80px; height: 80px;
+    background: var(--gray-mid);
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    border: 3px solid var(--gray);
+    transition: border-color 0.2s;
+  }
+
+  .team-card:hover .team-avatar { border-color: var(--yellow); }
+
+  .team-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+
+  .team-role {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 0.6rem;
+  }
+
+  .team-bio {
+    font-size: 0.85rem;
+    color: var(--gray-light);
+    line-height: 1.5;
+  }
+
+  /* ── REVIEWS ── */
+  #reviews { background: var(--black); overflow: hidden; }
+
+  .reviews-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .google-rating {
+    display: flex; align-items: center; gap: 1rem;
+    background: var(--gray);
+    padding: 1rem 1.5rem;
+    border-left: 4px solid var(--yellow);
+  }
+
+  .rating-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    color: var(--yellow);
+    line-height: 1;
+  }
+
+  .rating-stars { color: var(--yellow); font-size: 1.2rem; }
+
+  .rating-count {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: var(--gray-light);
+    text-transform: uppercase;
+  }
+
+  .reviews-track-outer {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .reviews-track-outer::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 100px;
+    background: linear-gradient(to right, transparent, var(--black));
+    pointer-events: none;
+  }
+
+  .reviews-track {
+    display: flex; gap: 1.5rem;
+    animation: scrollReviews 35s linear infinite;
+    width: max-content;
+  }
+
+  .reviews-track:hover { animation-play-state: paused; }
+
+  .review-card {
+    background: var(--gray);
+    padding: 1.8rem;
+    width: 320px;
+    flex-shrink: 0;
+    border-bottom: 3px solid var(--gray-mid);
+    transition: border-color 0.2s;
+  }
+
+  .review-card:hover { border-bottom-color: var(--yellow); }
+
+  .review-stars { color: var(--yellow); font-size: 1rem; margin-bottom: 0.8rem; }
+
+  .review-text {
+    font-size: 0.9rem;
+    color: var(--white);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .review-author {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--yellow);
+  }
+
+  @keyframes scrollReviews {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    background: var(--yellow);
+    color: var(--black);
+  }
+
+  #about .section-label { color: var(--black); opacity: 0.5; }
+  #about .section-title { color: var(--black); }
+  #about .divider { background: var(--black); opacity: 0.2; }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .about-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: rgba(0,0,0,0.75);
+    margin-bottom: 1.5rem;
+  }
+
+  .about-bolt {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(8rem, 20vw, 18rem);
+    line-height: 1;
+    color: rgba(0,0,0,0.08);
+    text-align: center;
+    user-select: none;
+  }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--gray); }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  .contact-item {
+    display: flex; gap: 1.2rem; align-items: flex-start;
+    margin-bottom: 2rem;
+  }
+
+  .contact-icon {
+    background: var(--yellow);
+    color: var(--black);
+    width: 42px; height: 42px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+
+  .contact-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 0.2rem;
+  }
+
+  .contact-value {
+    font-size: 1rem;
+    color: var(--white);
+    line-height: 1.5;
+  }
+
+  .hours-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .hours-table tr { border-bottom: 1px solid var(--gray-mid); }
+  .hours-table td { padding: 0.6rem 0; font-size: 0.9rem; }
+  .hours-table td:last-child { text-align: right; color: var(--yellow); font-family: 'Barlow Condensed', sans-serif; font-weight: 600; }
+
+  .hours-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black);
+    border-top: 2px solid var(--gray);
+    padding: 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    color: var(--yellow);
+  }
+
+  .footer-copy {
+    font-size: 0.8rem;
+    color: var(--gray-light);
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .footer-fun {
+    font-size: 0.8rem;
+    color: var(--gray-light);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-style: italic;
+  }
+
+  /* ── SODA BADGE ── */
+  .soda-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--gray-mid);
+    border: 1px solid var(--gray-light);
+    padding: 0.5rem 1rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: var(--gray-light);
+    margin-top: 1rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .why-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .about-bolt { display: none; }
+    .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
+    .hero-buttons { flex-direction: column; }
+    .btn-primary, .btn-secondary { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <span class="bolt">⚡</span>
+    <div class="nav-logo-text">
+      Greased Lightning
+      <span>Service Center</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="tel:+18175550100" class="nav-cta">⚡ Call Now</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bolt-bg">⚡</div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Fort Worth's Trusted Auto Shop · Since the '80s</p>
+    <h1 class="hero-title">
+      Fast.<br>
+      <span class="yellow">Honest.</span><br>
+      Fair.
+    </h1>
+    <p class="hero-subtitle">No upsells. No BS. Just quality auto service at prices that make sense.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">4.7★</div>
+        <div class="hero-stat-label">Google Rating</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">243</div>
+        <div class="hero-stat-label">Reviews</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">30+</div>
+        <div class="hero-stat-label">Years Serving FW</div>
+      </div>
+    </div>
+    <div class="hero-buttons">
+      <a href="tel:+18175550100" class="btn-primary">⚡ Call Now</a>
+      <a href="#services" class="btn-secondary">View Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">Oil Changes</span>
+    <span class="ticker-item">State Inspections</span>
+    <span class="ticker-item">Brake Repair</span>
+    <span class="ticker-item">AC Repair</span>
+    <span class="ticker-item">Tune-Ups</span>
+    <span class="ticker-item">Wheel Bearings</span>
+    <span class="ticker-item">Radiator Service</span>
+    <span class="ticker-item">Fuel Pumps</span>
+    <span class="ticker-item">Alternator Replacement</span>
+    <span class="ticker-item">No Upsells Ever</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">Oil Changes</span>
+    <span class="ticker-item">State Inspections</span>
+    <span class="ticker-item">Brake Repair</span>
+    <span class="ticker-item">AC Repair</span>
+    <span class="ticker-item">Tune-Ups</span>
+    <span class="ticker-item">Wheel Bearings</span>
+    <span class="ticker-item">Radiator Service</span>
+    <span class="ticker-item">Fuel Pumps</span>
+    <span class="ticker-item">Alternator Replacement</span>
+    <span class="ticker-item">No Upsells Ever</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-inner">
+    <p class="section-label">What We Do</p>
+    <h2 class="section-title">Services</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-icon">🛢️</span>
+        <div class="service-name">Oil Changes</div>
+        <div class="service-desc">Conventional and Mobil 1 synthetic. All fluids topped off — no charge.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">📋</span>
+        <div class="service-name">State Inspections</div>
+        <div class="service-desc">Fast Texas state inspections with well-maintained equipment. No unnecessary failures.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🔧</span>
+        <div class="service-name">Brake Repair</div>
+        <div class="service-desc">Full brake service — pads, rotors, drums, and more at fair prices.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">❄️</span>
+        <div class="service-name">AC Repair</div>
+        <div class="service-desc">Honest AC diagnostics and repair. Brian fixed one customer's AC for $500 — quoted $2,500 elsewhere.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">⚙️</span>
+        <div class="service-name">Tune-Ups</div>
+        <div class="service-desc">Spark plugs, wires, filters, and full engine tune-ups done right.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🔩</span>
+        <div class="service-name">Wheel Bearings</div>
+        <div class="service-desc">Hub assembly replacement and front-end work with precision and care.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🌡️</span>
+        <div class="service-name">Radiator & Cooling</div>
+        <div class="service-desc">Radiator flushes, coolant service, and overheating diagnosis.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">⛽</span>
+        <div class="service-name">Fuel System</div>
+        <div class="service-desc">Fuel pumps, fuel filters, and fuel system maintenance.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🔋</span>
+        <div class="service-name">Electrical & Alternator</div>
+        <div class="service-desc">Battery, alternator, and electrical diagnostics and replacement.</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🔦</span>
+        <div class="service-name">Check Engine Light</div>
+        <div class="service-desc">Diagnostic scans and code clearing. Honest assessment of what actually needs fixing.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why">
+  <div class="section-inner">
+    <div class="why-grid">
+      <div>
+        <p class="section-label">Why Choose Us</p>
+        <h2 class="section-title">We Don't<br>Waste Your<br>Time or Money</h2>
+        <div class="divider"></div>
+
+        <div class="why-feature">
+          <div class="why-icon">🚫</div>
+          <div>
+            <div class="why-feature-title">Zero Unnecessary Upsells</div>
+            <div class="why-feature-text">We only recommend what you actually need. Customers have driven here for 30 years specifically because of this.</div>
+          </div>
+        </div>
+
+        <div class="why-feature">
+          <div class="why-icon">💰</div>
+          <div>
+            <div class="why-feature-title">Fair & Transparent Pricing</div>
+            <div class="why-feature-text">We've completed jobs for less than the original estimate. Your quoted price is your final price.</div>
+          </div>
+        </div>
+
+        <div class="why-feature">
+          <div class="why-icon">⚡</div>
+          <div>
+            <div class="why-feature-title">Lightning Fast Service</div>
+            <div class="why-feature-text">In and out fast. No waiting around all day. We respect your time as much as our own.</div>
+          </div>
+        </div>
+
+        <div class="why-feature">
+          <div class="why-icon">🤝</div>
+          <div>
+            <div class="why-feature-title">Everyone Is Welcome</div>
+            <div class="why-feature-text">We treat every customer with respect — no matter who you are. Women especially have noted how well they're treated here.</div>
+          </div>
+        </div>
+
+        <div class="why-feature">
+          <div class="why-icon">🏘️</div>
+          <div>
+            <div class="why-feature-title">Community Institution</div>
+            <div class="why-feature-text">Customers drive from Granbury and beyond just to come here. We've earned that loyalty over decades.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="why-big-stat">
+          <div class="why-big-num">30+</div>
+          <div class="why-big-label">Years of Honest Service</div>
+        </div>
+        <div class="why-big-stat" style="margin-top: 2px;">
+          <div class="why-big-num">4.7★</div>
+          <div class="why-big-label">Google Rating · 243 Reviews</div>
+        </div>
+        <div class="why-big-stat" style="margin-top: 2px;">
+          <div class="why-big-num">$0</div>
+          <div class="why-big-label">Extra Charges. Ever.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="section-inner">
+    <p class="section-label">The People Behind the Wrench</p>
+    <h2 class="section-title">Meet the Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">🔧</div>
+        <div class="team-name">Brian</div>
+        <div class="team-role">Head Mechanic · 25+ Years</div>
+        <div class="team-bio">Known across Fort Worth for straight talk, expert diagnostics, and AC repair that saves customers thousands. Been at it since the '80s.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🛢️</div>
+        <div class="team-name">Eric</div>
+        <div class="team-role">Service Specialist</div>
+        <div class="team-bio">Friendly, efficient, and fair. Eric's the guy women specifically ask for — because he never tries to upsell.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">⚡</div>
+        <div class="team-name">Otter</div>
+        <div class="team-role">Service Tech</div>
+        <div class="team-bio">Fast, professional, and always gets the job done right. A key part of what makes Greased Lightning run like clockwork.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🔩</div>
+        <div class="team-name">Moe</div>
+        <div class="team-role">Service Tech</div>
+        <div class="team-bio">Reliable, knowledgeable, and a great guy to have working on your car. Part of the trusted Greased Lightning crew.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👑</div>
+        <div class="team-name">David Foreman</div>
+        <div class="team-role">Owner</div>
+        <div class="team-bio">Community-first owner who has built this shop on trust. Personally invested in every customer. The reason people keep coming back.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="section-inner">
+    <div class="reviews-header">
+      <div>
+        <p class="section-label">What Customers Say</p>
+        <h2 class="section-title">Reviews</h2>
+      </div>
+      <div class="google-rating">
+        <div class="rating-num">4.7</div>
+        <div>
+          <div class="rating-stars">★★★★★</div>
+          <div class="rating-count">243 Google Reviews</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reviews-track-outer">
+    <div class="reviews-track">
+      <!-- Set 1 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Honest mechanics, fair prices, quick service. What else do you need?"</div>
+        <div class="review-author">— Clay M.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Brian fixed my AC for $500 — I was quoted $2,500 at a bigger shop. He's honest, rare to find, and cuts through the BS."</div>
+        <div class="review-author">— Malina A.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Been taking my vehicles here for over 30 years. They do excellent work and don't try to sell you something extra unless it's actually needed."</div>
+        <div class="review-author">— William</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"If you are a female and want a reliable, honest and fast oil change, Greased Lightning is the bomb. Ask for Eric. Didn't try to upsell me."</div>
+        <div class="review-author">— Karen W.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"First place I've ever been to that completed the job for less than the estimate. Highly recommend."</div>
+        <div class="review-author">— Albert H.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Been going here for 20+ years, even when I didn't live nearby. Quick and honest service every single time."</div>
+        <div class="review-author">— Theresa M.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Best oil change service in Fort Worth. No question."</div>
+        <div class="review-author">— Frank O.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Great mechanic and knowledgeable. Anytime we have an issue, Brian already has an idea what it may be. One of those rare small businesses."</div>
+        <div class="review-author">— Joe B.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"I drive from Granbury to River Oaks just for their amazing service and reasonable prices. Owner David Foreman is so nice!"</div>
+        <div class="review-author">— Xuxa S.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"You will not find a more honest, knowledgeable, and efficient mechanic in the area. Straight forward pricing."</div>
+        <div class="review-author">— CMC</div>
+      </div>
+      <!-- Duplicate set for seamless loop -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Honest mechanics, fair prices, quick service. What else do you need?"</div>
+        <div class="review-author">— Clay M.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Brian fixed my AC for $500 — I was quoted $2,500 at a bigger shop. He's honest, rare to find, and cuts through the BS."</div>
+        <div class="review-author">— Malina A.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Been taking my vehicles here for over 30 years. They do excellent work and don't try to sell you something extra unless it's actually needed."</div>
+        <div class="review-author">— William</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"If you are a female and want a reliable, honest and fast oil change, Greased Lightning is the bomb. Ask for Eric. Didn't try to upsell me."</div>
+        <div class="review-author">— Karen W.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"First place I've ever been to that completed the job for less than the estimate. Highly recommend."</div>
+        <div class="review-author">— Albert H.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Best oil change service in Fort Worth. No question."</div>
+        <div class="review-author">— Frank O.</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"I drive from Granbury to River Oaks just for their amazing service and reasonable prices. Owner David Foreman is so nice!"</div>
+        <div class="review-author">— Xuxa S.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div>
+        <p class="section-label">Our Story</p>
+        <h2 class="section-title">Built on Trust,<br>Not Upsells</h2>
+        <div class="divider"></div>
+        <p class="about-text">
+          Greased Lightning Service Center has been serving the Fort Worth and River Oaks community for over three decades. Owner David Foreman built this shop on one simple idea: treat people right, charge them fairly, and they'll come back for life.
+        </p>
+        <p class="about-text">
+          Head mechanic Brian has been turning wrenches since the '80s, and customers have followed him here from across the Metroplex — some driving all the way from Granbury — just for his honest diagnosis and fair pricing. When Brian tells you what's wrong with your car, you can take it to the bank.
+        </p>
+        <p class="about-text">
+          No frills. No gimmicks. No upsells. Just good people doing good work at prices that make sense.
+        </p>
+        <div class="soda-badge">🥤 Ice cold 50¢ sodas in the waiting area — always</div>
+      </div>
+      <div class="about-bolt">⚡</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <p class="section-label">Come See Us</p>
+    <h2 class="section-title">Get In Touch</h2>
+    <div class="contact-grid">
+      <div>
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-value">(817) 555-0100</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-label">Address</div>
+            <div class="contact-value">River Oaks, Fort Worth, TX<br>
+              <a href="https://maps.google.com" target="_blank" style="color: var(--yellow); text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">
+                ↗ Get Directions
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">⚡</div>
+          <div>
+            <div class="contact-label">Walk-Ins Welcome</div>
+            <div class="contact-value">No appointment needed for most services. Just pull in.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="hours-title">Hours of Operation</div>
+        <table class="hours-table">
+          <tr><td>Monday</td><td>8:00 AM – 5:30 PM</td></tr>
+          <tr><td>Tuesday</td><td>8:00 AM – 5:30 PM</td></tr>
+          <tr><td>Wednesday</td><td>8:00 AM – 5:30 PM</td></tr>
+          <tr><td>Thursday</td><td>8:00 AM – 5:30 PM</td></tr>
+          <tr><td>Friday</td><td>8:00 AM – 5:30 PM</td></tr>
+          <tr><td>Saturday</td><td>8:00 AM – 3:00 PM</td></tr>
+          <tr><td>Sunday</td><td style="color: var(--gray-light);">Closed</td></tr>
+        </table>
+        <p style="font-size:0.75rem; color: var(--gray-light); margin-top: 1rem; font-style: italic;">* Hours may vary. Call ahead to confirm.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚡ Greased Lightning</div>
+  <div class="footer-copy">© 2025 Greased Lightning Service Center · Fort Worth, TX</div>
+  <div class="footer-fun">50¢ sodas. Priceless service.</div>
+</footer>
+
+</body>
+</html>
